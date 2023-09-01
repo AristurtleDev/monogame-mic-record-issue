@@ -130,8 +130,8 @@ namespace MicTest
         //  Does a simple GetData of the Microphone and writes it to the stream.
         private void OnBufferReady(object sender, EventArgs e)
         {
-            _mic.GetData(_buffer);
-            _stream.Write(_buffer, 0, _buffer.Length);
+            int dataSize = _mic.GetData(_buffer);
+            _stream.Write(_buffer, 0, dataSize);
         }
 
         //  Performs setup to start the microphone to begin recording audio.

@@ -34,6 +34,8 @@ namespace MicTest
 
         //  Buffer to hold the data from microphone when buffer is ready.
         private byte[] _buffer;
+        
+        private int _lastDataSize;
 
         //  Stream that the buffer will be written to as we record sound
         private MemoryStream _stream = new MemoryStream();
@@ -130,8 +132,11 @@ namespace MicTest
         //  Does a simple GetData of the Microphone and writes it to the stream.
         private void OnBufferReady(object sender, EventArgs e)
         {
-            _mic.GetData(_buffer);
+            int dataSize = _mic.GetData(_buffer);
             _stream.Write(_buffer, 0, _buffer.Length);
+
+            _lastDataSize = dataSize;
+            System.Diagnostics.Debug.WriteLine("_lastDataSize: " + _lastDataSize);
         }
 
         //  Performs setup to start the microphone to begin recording audio.
@@ -173,7 +178,9 @@ namespace MicTest
 
             //  Just draw a string of the current program state to the screen somewhere.
             _spriteBatch.Begin();
-            _spriteBatch.DrawString(_font, _programState.ToString(), new Vector2(100, 100), Color.Black);
+            _spriteBatch.DrawString(_font, "Program State:  " + _programState.ToString(), new Vector2(100, 100), Color.Black);
+            _spriteBatch.DrawString(_font, "BufferDuration: " + _mic.BufferDuration.TotalSeconds.ToString(), new Vector2(100, 120), Color.Black);
+            _spriteBatch.DrawString(_font, "Last DataSize:  " + _lastDataSize.ToString(), new Vector2(100, 140), Color.Black);
             _spriteBatch.End();
 
             base.Draw(gameTime);
